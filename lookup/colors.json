@@ -1,0 +1,12 @@
+{
+  "🟡": {"category": "P", "symbol": false},
+  "🟨": {"category": "P", "symbol": true},
+  "🔵": {"category": "O", "symbol": false},
+  "🟦": {"category": "O", "symbol": true},
+  "🟤": {"category": "A", "symbol": false},
+  "🟫": {"category": "A", "symbol": true},
+  "🟢": {"category": "D", "symbol": false},
+  "🟩": {"category": "D", "symbol": true},
+  "🔴": {"category": "AP", "symbol": false},
+  "🟥": {"category": "AP", "symbol": true}
+}
