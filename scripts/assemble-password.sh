@@ -21,6 +21,8 @@
 #                  default: gh-pattern.age
 #   CARDS_SUBDIR   subdirectory in VAULT_DIR for multi-card storage
 #                  default: cards
+#   TOKEN_SEP      separator inserted between output tokens
+#                  default: " " (space); set to "" for no separator
 #
 # Pattern format:  [CARDID/]TOKEN/TOKEN/...
 #   CARDID prefix (e.g. P2E.1) resolves to VAULT_DIR/CARDS_SUBDIR/P2E.1.age
@@ -96,9 +98,10 @@ PATTERN=$(age -d -i "$AGE_KEY" "$VAULT_DIR/$PATTERN_VAULT" 2>/dev/null) || {
   echo "error: failed to decrypt pattern vault" >&2; exit 1
 }
 
-# Extract card ID from pattern prefix (e.g. "P2E.1/🟨/..." -> "P2E.1")
+# Extract card ID from pattern prefix (e.g. "/P2E.1/🟨/..." or "P2E.1/🟨/..." -> "P2E.1")
+PATTERN_STRIPPED="${PATTERN#/}"  # remove leading / if present
 CARD_ID=""
-if [[ "$PATTERN" =~ ^([^/]+\.[^/]+)/ ]]; then
+if [[ "$PATTERN_STRIPPED" =~ ^([^/]+\.[^/]+)/ ]]; then
   CARD_ID="${BASH_REMATCH[1]}"
 fi
 
@@ -130,12 +133,15 @@ else
   COLORS=$(cat "$LOOKUP_DIR/colors.json")
 fi
 
+TOKEN_SEP="${TOKEN_SEP:- }"
+
 echo "$PATTERN"$'\n'"$CARD" | python3 -c "
 import sys, json, re
 
 lines = sys.stdin.read().split('\n', 1)
-raw_pattern = lines[0].strip()
+raw_pattern = lines[0].strip().lstrip('/')   # strip leading / if present
 card        = lines[1].strip()
+sep         = '$TOKEN_SEP'
 
 card_num = ''
 if re.match(r'^[^/]+\.[^/]+/', raw_pattern):
@@ -177,11 +183,11 @@ for token in tokens:
     elif token in emoji_set:
         info = colors[token]
         word, _ = card_map[info['category']]
-        result.append(word.capitalize() if info['symbol'] else word.lower())
+        result.append(word.upper() if info['symbol'] else word.lower())
     else:
         result.append(token)
 
-sys.stdout.write(''.join(result))
+sys.stdout.write(sep.join(result))
 "
 
 unset PATTERN CARD COLORS CARD_VAULT CARD_ID
