@@ -34,12 +34,13 @@ usage() {
 
 [[ "${1:-}" == "--help" || "${1:-}" == "-h" ]] && usage 0
 
-CARD_ID="${1:-}"
+CARD_ID="${1:-${CARD_ID:-}}"
 
 if [[ -z "$CARD_ID" ]]; then
   echo "error: no card ID specified" >&2
   echo "" >&2
   echo "usage: show-card.sh <CARD_ID>   (e.g. P2E.1, P2E.299)" >&2
+  echo "       or set CARD_ID in your account .env" >&2
   echo "" >&2
   echo "available cards:" >&2
   if ls "$VAULT_DIR/$CARDS_SUBDIR/"*.age 2>/dev/null | grep -q .; then
