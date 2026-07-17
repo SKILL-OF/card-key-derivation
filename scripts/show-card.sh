@@ -36,10 +36,13 @@ else
   unset PATTERN CARD_ID
 fi
 
-age -d -i "$AGE_KEY" "$CARD_VAULT" 2>/dev/null | python3 - "$LOOKUP_DIR" << 'PYEOF'
+# Read card into variable to avoid pipe-vs-heredoc stdin conflict
+CARD=$(age -d -i "$AGE_KEY" "$CARD_VAULT" 2>/dev/null)
+
+echo "$CARD" | python3 -c "
 import sys, json, os
 
-lookup_dir = sys.argv[1]
+lookup_dir = '$LOOKUP_DIR'
 line = sys.stdin.read().strip()
 
 with open(os.path.join(lookup_dir, 'colors.json')) as f:
@@ -52,7 +55,6 @@ if os.path.exists(editions_path):
         editions = json.load(f)
 
 prefix, payload = line.split('/', 1)
-# prefix may be "P2E.299" or "MTG.001" etc. — split on last dot for card number
 dot_idx = prefix.rfind('.')
 edition_code = prefix[:dot_idx] if dot_idx >= 0 else prefix
 card_num     = prefix[dot_idx+1:] if dot_idx >= 0 else ''
@@ -84,6 +86,6 @@ for emoji, word in entries:
     cell = f'> {word}' if info['symbol'] else word
     print(f'| **{cat}** | {cell} | |')
 print(f'| | | **{card_num}** |')
-PYEOF
+"
 
-unset CARD_VAULT
+unset CARD CARD_VAULT
