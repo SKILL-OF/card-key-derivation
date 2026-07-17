@@ -1,13 +1,13 @@
 {
   "name": "card-key-derivation",
   "version": "1.0.0",
-  "description": "Derive credentials from physical board game cards using steganographic emoji encoding",
+  "description": "Derive credentials from any physical card with words using steganographic emoji encoding",
   "scripts": {
-    "enroll-card": "bash scripts/enroll-card.sh",
-    "enroll-pattern": "bash scripts/enroll-secret.sh gh-pattern.age 'Paste PASSCODE_PATTERN (emoji form e.g. 🟨/🔵/🟫/.299/)'",
-    "enroll-colors": "bash scripts/enroll-secret.sh gh-colors.age 'Paste colors JSON'",
+    "enroll-card":     "bash scripts/enroll-card.sh",
+    "enroll-pattern":  "bash scripts/enroll-pattern.sh",
+    "enroll-colors":   "bash scripts/enroll-secret.sh gh-colors.age 'Paste colors JSON'",
     "enroll-editions": "bash scripts/enroll-secret.sh gh-editions.age 'Paste editions JSON'",
-    "show-card": "bash scripts/show-card.sh",
+    "show-card":       "bash scripts/show-card.sh",
     "assemble-password": "bash scripts/assemble-password.sh"
   }
 }
