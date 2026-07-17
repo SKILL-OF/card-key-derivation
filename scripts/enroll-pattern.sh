@@ -37,6 +37,8 @@ AGE_KEY="${AGE_KEY:-$HOME/.aurora-agent/keys/totp-key.txt}"
 VAULT_DIR="${VAULT_DIR:-$HOME/.aurora-agent/secrets}"
 PATTERN_VAULT="${PATTERN_VAULT:-gh-pattern.age}"
 
+DECK_CODE="${DECK_CODE:-}"
+
 echo "Paste pattern then press Enter:" >&2
 read -r RAW_PATTERN
 
