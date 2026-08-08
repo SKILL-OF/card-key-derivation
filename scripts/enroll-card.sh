@@ -22,12 +22,23 @@ VAULT_DIR="${VAULT_DIR:-$HOME/.aurora-agent/secrets}"
 CARDS_SUBDIR="${CARDS_SUBDIR:-cards}"
 CATEGORY_ORDER=("P" "O" "A" "D" "AP")
 
-declare -A EMOJI
-EMOJI[P:0]="🟡"; EMOJI[P:1]="🟨"
-EMOJI[O:0]="🔵"; EMOJI[O:1]="🟦"
-EMOJI[A:0]="🟤"; EMOJI[A:1]="🟫"
-EMOJI[D:0]="🟢"; EMOJI[D:1]="🟩"
-EMOJI[AP:0]="🔴"; EMOJI[AP:1]="🟥"
+# associative arrays (declare -A) require bash 4+; macOS ships bash 3.2 as
+# /bin/bash and never updates it (Apple's GPLv3 licensing stance), so a
+# function-based lookup is used instead - portable to both.
+emoji_for() {
+  case "$1:$2" in
+    P:0)  echo "🟡" ;;
+    P:1)  echo "🟨" ;;
+    O:0)  echo "🔵" ;;
+    O:1)  echo "🟦" ;;
+    A:0)  echo "🟤" ;;
+    A:1)  echo "🟫" ;;
+    D:0)  echo "🟢" ;;
+    D:1)  echo "🟩" ;;
+    AP:0) echo "🔴" ;;
+    AP:1) echo "🟥" ;;
+  esac
+}
 
 echo "Paste card line (e.g. P2E.299/>word/word/>word/word/word) then press Enter:" >&2
 read -r INPUT
@@ -66,7 +77,7 @@ print('\n'.join(tokens))
     else
       SYM=0; WORD="$TOKEN"
     fi
-    CANONICAL+="${EMOJI[$CAT:$SYM]}${WORD}"
+    CANONICAL+="$(emoji_for "$CAT" "$SYM")${WORD}"
     IDX=$(( IDX + 1 ))
   done <<< "$TOKENS"
 fi
